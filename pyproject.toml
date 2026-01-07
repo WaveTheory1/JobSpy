@@ -30,6 +30,7 @@ dependencies = [
     "tls-client>=1.0.1,<2",
     "markdownify>=1.1.0,<2",
     "regex>=2024.4.28,<2025",
+    "typer>=0.21.1",
 ]
 
 [project.urls]
