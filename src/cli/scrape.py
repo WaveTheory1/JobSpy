@@ -144,6 +144,7 @@ def collect_user_inputs() -> dict[str, Any]:
         "search_term": search_query,
         "results_wanted": num_entries,
         "hours_old": hours_old,
+        "location": country,
         "country_indeed": country,
     }
 
