@@ -1,26 +1,9 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [project]
-name = "python-jobspy"
-version = "1.1.82"
-description = "Job scraper for LinkedIn, Indeed, Glassdoor, ZipRecruiter & Bayt"
-authors = [
-    { name = "Cullen Watson", email = "cullen@cullenwatson.com" },
-    { name = "Zachary Hampton", email = "zachary@zacharysproducts.com" },
-]
-requires-python = ">=3.10,<4"
+name = "scraper"
+version = "0.1.0"
+description = "CLI Job scraper for LinkedIn, Indeed, Glassdoor, ZipRecruiter & Bayt"
 readme = "README.md"
-keywords = [
-    "jobs-scraper",
-    "linkedin",
-    "indeed",
-    "glassdoor",
-    "ziprecruiter",
-    "bayt",
-    "naukri",
-]
+requires-python = ">=3.10,<4"
 dependencies = [
     "requests>=2.31.0,<3",
     "beautifulsoup4>=4.12.2,<5",
@@ -32,21 +15,36 @@ dependencies = [
     "regex>=2024.4.28,<2025",
     "typer>=0.21.1",
 ]
+keywords = [
+    "jobs-scraper",
+    "linkedin",
+    "indeed",
+    "glassdoor",
+    "ziprecruiter",
+    "bayt",
+    "naukri",
+    "cli"
+]
 
 [project.urls]
 Homepage = "https://github.com/WaveTheory1/JobSpy"
+
+[project.scripts]
+scraper = "cli.scrape:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/jobspy", "src/cli"]
+
 
 [dependency-groups]
 dev = [
     "black",
     "pre-commit",
 ]
-
-[tool.hatch.build.targets.sdist]
-include = ["jobspy"]
-
-[tool.hatch.build.targets.wheel]
-include = ["jobspy"]
 
 [tool.black]
 line-length = 88
