@@ -14,7 +14,8 @@ from rich.text import Text
 
 from jobspy import scrape_jobs
 from jobspy.model import Site
-from utils import generate_html_content
+
+from .utils import generate_html_content
 
 if TYPE_CHECKING:
     from pandas import DataFrame
