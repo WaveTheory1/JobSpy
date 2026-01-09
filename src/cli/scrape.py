@@ -54,7 +54,7 @@ def print_welcome_message() -> None:
 
     panel = Panel(
         welcome_text,
-        title="[bold bright_white]Welcome[/bold bright_white]",
+        title="[bold]Welcome[/bold]",
         border_style="bright_cyan",
         padding=(1, 2),
     )
@@ -62,12 +62,10 @@ def print_welcome_message() -> None:
 
     # Instructions
     console.print(
-        "💡 [bright_yellow]Tip:[/bright_yellow] [white]Default values appear in [bright_cyan](brackets)[/bright_cyan][/white]",
-        style="dim",
+        "💡 [bright_yellow]Tip:[/bright_yellow] Default values appear in [bright_cyan](brackets)[/bright_cyan]",
     )
     console.print(
-        "   [white]Press [bright_green]ENTER[/bright_green] to accept the default value[/white]\n",
-        style="dim",
+        "   Press [bright_green]ENTER[/bright_green] to accept the default value\n",
     )
 
 
@@ -81,7 +79,7 @@ def print_goodbye_message(output_dir: str, num_results: int) -> None:
 
     panel = Panel(
         text,
-        subtitle=f"[dim white]📁 Results → {output_dir}[/dim white]",
+        subtitle=f"📁 Results → {output_dir}",
         border_style="bright_green",
         padding=(1, 2),
     )
@@ -94,12 +92,11 @@ def collect_user_inputs() -> dict[str, Any]:
     # Platforms
     available_platforms = ", ".join([s.name.capitalize() for s in Site])
     console.print(
-        f"[dim]Available platforms: [bright_white]{available_platforms}[/bright_white][/dim]\n"
+        f"Available platforms: [bright_red]{available_platforms}[/bright_red]\n"
     )
 
     platforms = EnumPrompt.ask(
-        "[bright_cyan]🖥️  Select platforms[/bright_cyan] [dim](comma-separated)[/dim]",
-        default="Linkedin, Indeed",
+        "[bright_cyan]🖥️  Select platforms[/bright_cyan] (comma-separated)",
         console=console,
     )
 
@@ -112,24 +109,22 @@ def collect_user_inputs() -> dict[str, Any]:
 
     # Number of entries
     num_entries = Prompt.ask(
-        "[bright_cyan]📊 Number of jobs[/bright_cyan] [dim](max 1000)[/dim]",
+        "[bright_cyan]📊 Number of jobs[/bright_cyan](max 1000)",
         default="1000",
         console=console,
     )
     try:
         num_entries = int(num_entries)
         if num_entries < 1 or num_entries > 1000:
-            console.print(
-                "[yellow]⚠[/yellow]  Using maximum of 1000 entries", style="dim"
-            )
+            console.print("[yellow]⚠[/yellow]  Using maximum of 1000 entries")
             num_entries = 1000
     except ValueError:
-        console.print("[yellow]⚠[/yellow]  Invalid number. Using 1000", style="dim")
+        console.print("[yellow]⚠[/yellow]  Invalid number. Using 1000")
         num_entries = 1000
 
     # Hours
     hours_old = IntPrompt.ask(
-        "[bright_cyan]⏰ Results age[/bright_cyan] [dim](hours)[/dim]",
+        "[bright_cyan]⏰ Results age[/bright_cyan](hours)",
         default="24",
         console=console,
     )
@@ -139,6 +134,13 @@ def collect_user_inputs() -> dict[str, Any]:
         "[bright_cyan]🌍 Country[/bright_cyan]", default="USA", console=console
     )
 
+    # Output Dir
+    output = Prompt.ask(
+        "📁 Where do you want to save the results?",
+        default="Desktop/data",
+        console=console,
+    )
+
     return {
         "site_name": platforms,
         "search_term": search_query,
@@ -146,6 +148,7 @@ def collect_user_inputs() -> dict[str, Any]:
         "hours_old": hours_old,
         "location": country,
         "country_indeed": country,
+        "output_dir": output,
     }
 
 
@@ -171,16 +174,17 @@ def scrape() -> None:
 
     inputs = collect_user_inputs()
 
-    filename = Path(f"./data/{date.today()}/Jobs-{date.today()}")
+    output_dir = inputs.pop("output_dir")
+    filename = Path(f"./{output_dir}/{date.today()}/Jobs-{date.today()}")
     filename.parent.mkdir(parents=True, exist_ok=True)
 
     console.print("✨ ", style="bright_yellow")
-    console.print("Scraping jobs... Please wait.", style="bright_white")
+    console.print("Scraping jobs... Please wait.")
 
     jobs = scrape_jobs(**inputs, linkedin_fetch_description=True)
     save_results(jobs, title=inputs["search_term"], output_file=filename)
 
-    print_goodbye_message(filename.parent.name, len(jobs))
+    print_goodbye_message(output_dir, len(jobs))
 
 
 if __name__ == "__main__":
